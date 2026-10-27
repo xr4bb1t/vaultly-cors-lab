@@ -1,0 +1,62 @@
+# ===========================================================================
+#  Vaultly CORS Lab — docker compose
+#  All lab hostnames are network aliases on the Caddy proxy, so every service
+#  (and the victim bot) resolves them to the single entry point. Caddy routes
+#  by Host header and terminates TLS with its local CA.
+# ===========================================================================
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./web/app:/srv/app:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [api, attacker, bot, scoreboard]
+    networks:
+      default:
+        aliases:
+          - app.vaultly.lab
+          - api.vaultly.lab
+          - status.vaultly.lab
+          - ctf.vaultly.lab
+          - legacy.vaultly.lab
+          - evil.lab
+          - vaultly.lab.evil.lab
+          - vaultlyXlab.evil.lab
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      - LAB_SEED=${LAB_SEED:-}
+    expose: ["3000"]
+
+  attacker:
+    build: ./attacker
+    restart: unless-stopped
+    expose: ["5000"]
+
+  bot:
+    build: ./bot
+    restart: unless-stopped
+    expose: ["6000"]
+
+  scoreboard:
+    build: ./scoreboard
+    restart: unless-stopped
+    environment:
+      - LAB_SEED=${LAB_SEED:-}
+    expose: ["4000"]
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  default:
+    name: vaultly-lab

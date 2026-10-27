@@ -1,0 +1,35 @@
+{
+	# Caddy's built-in local CA issues certs for every https site below.
+	# Trust the root once (see setup/trust-ca.md) and the browser is happy.
+	local_certs
+	auto_https disable_redirects
+}
+
+# ---- Victim dashboard (static) ------------------------------------------
+app.vaultly.lab {
+	root * /srv/app
+	file_server
+}
+
+# ---- Vulnerable API  +  the C5 XSS status subdomain ---------------------
+api.vaultly.lab, status.vaultly.lab {
+	reverse_proxy api:3000
+}
+
+# ---- CTF scoreboard + deliver-to-victim ---------------------------------
+ctf.vaultly.lab {
+	reverse_proxy scoreboard:4000
+}
+
+# ---- Attacker exploit server (https origins) ----------------------------
+# evil.lab           -> C1 / C2 (cross-site + null)
+# vaultly.lab.evil.lab -> C3 payload origin
+# vaultlyXlab.evil.lab -> C4 payload origin
+evil.lab, vaultly.lab.evil.lab, vaultlyXlab.evil.lab {
+	reverse_proxy attacker:5000
+}
+
+# ---- Attacker exploit server over INSECURE http (C6) --------------------
+http://legacy.vaultly.lab {
+	reverse_proxy attacker:5000
+}

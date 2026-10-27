@@ -1,0 +1,18 @@
+# Vaultly CORS Lab — add these to your hosts file.
+#   Linux/macOS:  sudo nano /etc/hosts
+#   Windows:      C:\Windows\System32\drivers\etc\hosts  (edit as Administrator)
+#
+# Everything points at the Caddy proxy on localhost.
+
+127.0.0.1   app.vaultly.lab
+127.0.0.1   api.vaultly.lab
+127.0.0.1   status.vaultly.lab
+127.0.0.1   legacy.vaultly.lab
+127.0.0.1   ctf.vaultly.lab
+127.0.0.1   evil.lab
+127.0.0.1   vaultly.lab.evil.lab
+127.0.0.1   vaultlyXlab.evil.lab
+
+# Want to experiment with ARBITRARY attacker subdomains (your own bypass
+# payloads)? Add each one here, or run dnsmasq with:
+#     address=/evil.lab/127.0.0.1

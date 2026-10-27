@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vaultly — your money, simplified</title>
+<style>
+  :root{--bg:#0a0e1a;--panel:#121a2e;--line:#243049;--text:#dbe1ee;--muted:#8a93a8;--gold:#f3b43a;--ok:#39cf8f}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0}
+  .top{border-bottom:1px solid var(--line);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:0 auto}
+  .logo{font-weight:800;font-size:19px;color:var(--gold)} .logo span{color:var(--text)}
+  main{max-width:960px;margin:0 auto;padding:30px 24px}
+  .card{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:22px;margin-bottom:18px}
+  h2{font-size:16px;margin:0 0 14px}
+  input{background:#0c1120;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:11px;font-size:14px;width:100%;margin-bottom:10px}
+  button{background:var(--gold);color:#1a1300;border:0;border-radius:7px;padding:11px 18px;font-weight:700;cursor:pointer}
+  .muted{color:var(--muted);font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.grid{grid-template-columns:1fr}}
+  .tile{border:1px solid var(--line);border-radius:10px;padding:16px;background:#0c1120}
+  .tile .k{font-size:12px;color:var(--muted)} .tile .v{font-size:20px;font-weight:700;margin-top:4px}
+  code{font-family:ui-monospace,monospace;background:#0c1120;border:1px solid var(--line);padding:1px 6px;border-radius:4px;color:var(--gold)}
+  #who{font-size:13px;color:var(--ok)}
+</style>
+</head>
+<body>
+  <div class="top"><div class="logo">Vault<span>ly</span></div><div id="who">not signed in</div></div>
+  <main>
+    <div class="card" id="loginCard">
+      <h2>Sign in to Vaultly</h2>
+      <p class="muted">Demo analyst account for exploring the product.</p>
+      <input id="u" placeholder="username" value="player" autocomplete="off">
+      <input id="p" type="password" placeholder="password" value="player123" autocomplete="off">
+      <button onclick="login()">Sign in</button>
+      <span id="loginmsg" class="muted"></span>
+    </div>
+    <div class="card" id="dash" style="display:none">
+      <h2>Overview</h2>
+      <div class="grid">
+        <div class="tile"><div class="k">Checking</div><div class="v">$42.00</div></div>
+        <div class="tile"><div class="k">Rewards</div><div class="v">1,208 pts</div></div>
+        <div class="tile"><div class="k">Cards</div><div class="v">&bull;&bull;&bull;&bull; 0000</div></div>
+      </div>
+      <p class="muted" style="margin-top:14px">Signed in as <b id="dashuser"></b>. <a href="#" onclick="logout();return false" style="color:var(--gold)">Sign out</a></p>
+    </div>
+    <div class="card">
+      <h2>Developer</h2>
+      <p class="muted">Vaultly exposes a public API at <code>https://api.vaultly.lab</code> (v2). This dashboard talks to it. Start your recon there &mdash; some surfaces are more talkative than others.</p>
+      <p class="muted">Submit findings at <code>https://ctf.vaultly.lab</code>.</p>
+    </div>
+  </main>
+<script>
+  const API='https://api.vaultly.lab';
+  async function who(){try{const r=await (await fetch(API+'/api/v2/auth/whoami',{credentials:'include'})).json();
+    if(r.user){document.getElementById('who').textContent='signed in: '+r.name;document.getElementById('loginCard').style.display='none';
+    document.getElementById('dash').style.display='block';document.getElementById('dashuser').textContent=r.name;}}catch(e){}}
+  async function login(){const m=document.getElementById('loginmsg');try{
+    const r=await (await fetch(API+'/api/v2/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user:document.getElementById('u').value,pass:document.getElementById('p').value})})).json();
+    if(r.ok){who();}else{m.textContent=' '+(r.error||'failed');}}catch(e){m.textContent=' network error — accept the cert for https://api.vaultly.lab first';}}
+  async function logout(){await fetch(API+'/api/v2/auth/logout',{method:'POST',credentials:'include'});location.reload();}
+  who();
+</script>
+</body>
+</html>
