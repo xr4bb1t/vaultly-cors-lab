@@ -17,7 +17,7 @@ exploit.
 ## Quick start
 
 ```bash
-git clone https://github.com/<YOUR_USER>/vaultly-cors-lab.git
+git clone https://github.com/xr4bb1t/vaultly-cors-lab.git
 cd vaultly-cors-lab
 sudo tee -a /etc/hosts < setup/hosts.txt      # add lab hostnames
 sudo docker compose up --build                # start everything
@@ -90,20 +90,7 @@ node tools/verify-flag.js roll_2025_0417 "VAULTLY{...__tag}"
 
 See INSTALL.md §8 for the full graded workflow.
 
----
 
-## Admin answer key
-
-<details><summary>Spoilers — the 12 base flags (per-student seeding adds a __tag suffix)</summary>
-
-```
-Reflected origin   VAULTLY{bhai_origin_bhi_check_kar_le}        VAULTLY{wallet_gaya_chai_peene_nahi}
-null origin        VAULTLY{null_matlab_safe_nahi_hota_bhai}     VAULTLY{iframe_mein_ghuske_statement_le_gaya}
-Substring match    VAULTLY{startswith_dekhke_trust_kar_liya}    VAULTLY{domain_ke_aage_chuna_laga_gaya}
-Weak regex         VAULTLY{regex_bhai_dot_to_escape_karleta}    VAULTLY{api_key_gaya_regex_so_gaya}
-Subdomain + XSS    VAULTLY{trusted_subdomain_ka_trust_issues}   VAULTLY{xss_ne_cors_se_setting_kar_li}
-Insecure http      VAULTLY{http_pe_bharosa_waah_bhai_waah}      VAULTLY{network_wale_bhaiya_maal_le_gaye}
-```
 </details>
 
 ---
